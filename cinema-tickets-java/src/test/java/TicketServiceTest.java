@@ -169,7 +169,8 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(ADULT, 1),
+         TicketTypeRequest[] tickets = {
+            new TicketTypeRequest(ADULT, 1),
             new TicketTypeRequest(ADULT, 2),
             new TicketTypeRequest(CHILD, 5),
             new TicketTypeRequest(INFANT, 3)
