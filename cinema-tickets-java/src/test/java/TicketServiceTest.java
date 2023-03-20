@@ -6,6 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.ADULT;
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.INFANT;
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.CHILD;
+
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.seatbooking.SeatReservationService;
 import uk.gov.dwp.uc.pairtest.TicketService;
@@ -28,7 +32,7 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1)};
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(ADULT, 1)};
 
         ticketService.purchaseTickets(0L, tickets);
 
@@ -39,7 +43,7 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 1), new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 1)};
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(CHILD, 1), new TicketTypeRequest(CHILD, 1)};
 
         ticketService.purchaseTickets(1L, tickets);
     } 
@@ -49,7 +53,7 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1), new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1)};
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(INFANT, 1), new TicketTypeRequest(INFANT, 1)};
 
         ticketService.purchaseTickets(1L, tickets);
     } 
@@ -59,7 +63,7 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 1), new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1)};
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(CHILD, 1), new TicketTypeRequest(INFANT, 1)};
 
         ticketService.purchaseTickets(1L, tickets);
     } 
@@ -69,7 +73,11 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1), new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1),new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1)};
+         TicketTypeRequest[] tickets = {
+             new TicketTypeRequest(INFANT, 1),
+             new TicketTypeRequest(INFANT, 1),
+             new TicketTypeRequest(ADULT, 1)
+            };
 
         ticketService.purchaseTickets(1L, tickets);
     } 
@@ -79,7 +87,11 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-        TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 0), new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1),new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1)};
+        TicketTypeRequest[] tickets = {
+            new TicketTypeRequest(ADULT, 0),
+            new TicketTypeRequest(INFANT, 1),
+            new TicketTypeRequest(ADULT, 1)
+        };
 
         ticketService.purchaseTickets(1L, tickets);
     } 
@@ -121,10 +133,10 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-        TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1),
+        TicketTypeRequest[] tickets = {new TicketTypeRequest(ADULT, 1),
             null,
-            new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 5),
-            new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1)
+            new TicketTypeRequest(CHILD, 5),
+            new TicketTypeRequest(INFANT, 1)
         };
 
 
@@ -138,9 +150,9 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1),
-            new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 2),
-            new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 5),
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(ADULT, 1),
+            new TicketTypeRequest(ADULT, 2),
+            new TicketTypeRequest(CHILD, 5),
         };
 
         ticketService.purchaseTickets(accountId, tickets);
@@ -157,10 +169,10 @@ public class TicketServiceTest {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
-         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1),
-            new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 2),
-            new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 5),
-            new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 3)
+         TicketTypeRequest[] tickets = {new TicketTypeRequest(ADULT, 1),
+            new TicketTypeRequest(ADULT, 2),
+            new TicketTypeRequest(CHILD, 5),
+            new TicketTypeRequest(INFANT, 3)
         };
 
         ticketService.purchaseTickets(accountId, tickets);
