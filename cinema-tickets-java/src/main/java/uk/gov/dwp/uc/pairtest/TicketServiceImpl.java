@@ -3,7 +3,9 @@ package uk.gov.dwp.uc.pairtest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.ADULT;
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.INFANT;
+import static uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest.Type.CHILD;
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.seatbooking.SeatReservationService;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
@@ -14,8 +16,8 @@ public class TicketServiceImpl implements TicketService {
      * Should only have private methods other than the one below.
      */
 
-     private TicketPaymentService ticketPaymentService;
-     private SeatReservationService seatReservationService;
+    private TicketPaymentService ticketPaymentService;
+    private SeatReservationService seatReservationService;
 
     public TicketServiceImpl(TicketPaymentService ticketPaymentService, SeatReservationService seatReservationService ) {
         this.ticketPaymentService = ticketPaymentService;
@@ -36,9 +38,9 @@ public class TicketServiceImpl implements TicketService {
 
         if(containsInvalidValidTicketValues(ticketRequests)) throw new InvalidPurchaseException();
 
-        List<TicketTypeRequest> adultTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.ADULT)).collect(Collectors.toList());
-        List<TicketTypeRequest> childTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.CHILD)).collect(Collectors.toList());
-        List<TicketTypeRequest> infantTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.INFANT)).collect(Collectors.toList());
+        List<TicketTypeRequest> adultTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(ADULT)).collect(Collectors.toList());
+        List<TicketTypeRequest> childTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(CHILD)).collect(Collectors.toList());
+        List<TicketTypeRequest> infantTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(INFANT)).collect(Collectors.toList());
 
         int numberOfInfantTickets = infantTickets.stream().reduce(0, (infants, ticket) -> infants + ticket.getNoOfTickets(), Integer::sum);
         int numberOfAdultTickets = adultTickets.stream().reduce(0, (adults, ticket) -> adults + ticket.getNoOfTickets(), Integer::sum);
@@ -57,7 +59,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private boolean containsAdult(List<TicketTypeRequest> ticketTypeRequests) {
-        return ticketTypeRequests.stream().anyMatch(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.ADULT));
+        return ticketTypeRequests.stream().anyMatch(ticket -> ticket.getTicketType().equals(ADULT));
     }
     
     private boolean containsInvalidValidTicketValues(List<TicketTypeRequest> ticketTypeRequests)  {
