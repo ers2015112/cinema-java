@@ -24,34 +24,44 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void purchaseTickets(Long accountId, TicketTypeRequest... ticketTypeRequests) throws InvalidPurchaseException {
+
+        if (ticketTypeRequests == null || ticketTypeRequests.length == 0) throw new InvalidPurchaseException();
+
         if (accountId <= 0) throw new InvalidPurchaseException();
 
-        List<TicketTypeRequest> ticketRequests = Arrays.asList(ticketTypeRequests);
+        List<TicketTypeRequest> ticketRequests = Arrays.asList(ticketTypeRequests).stream()
+            .filter(ticket -> ticket != null).collect(Collectors.toList());
 
         if(!containsAdult(ticketRequests)) throw new InvalidPurchaseException();
 
-        if(!containsEnoughAdults(ticketRequests)) throw new InvalidPurchaseException();
+        if(containsInvalidValidTicketValues(ticketRequests)) throw new InvalidPurchaseException();
 
         List<TicketTypeRequest> adultTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.ADULT)).collect(Collectors.toList());
         List<TicketTypeRequest> childTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.CHILD)).collect(Collectors.toList());
+        List<TicketTypeRequest> infantTickets = ticketRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.INFANT)).collect(Collectors.toList());
 
+        int numberOfInfantTickets = infantTickets.stream().reduce(0, (infants, ticket) -> infants + ticket.getNoOfTickets(), Integer::sum);
         int numberOfAdultTickets = adultTickets.stream().reduce(0, (adults, ticket) -> adults + ticket.getNoOfTickets(), Integer::sum);
         int numberOfChildTickets = childTickets.stream().reduce(0, (children, ticket) -> children + ticket.getNoOfTickets(), Integer::sum);
 
-        if (numberOfAdultTickets + numberOfChildTickets > 20) throw new InvalidPurchaseException();
+        if (numberOfInfantTickets > numberOfAdultTickets) throw new InvalidPurchaseException();
 
-        ticketPaymentService.makePayment(accountId, 20);
-        seatReservationService.reserveSeat(accountId, 1);
+        int totalNumberOfTickets = numberOfAdultTickets + numberOfChildTickets;
+
+        if (totalNumberOfTickets > 20) throw new InvalidPurchaseException();
+
+        int amountToPay = (numberOfAdultTickets * 20) + (numberOfChildTickets * 10);
+
+        ticketPaymentService.makePayment(accountId, amountToPay);
+        seatReservationService.reserveSeat(accountId, totalNumberOfTickets);
     }
 
     private boolean containsAdult(List<TicketTypeRequest> ticketTypeRequests) {
         return ticketTypeRequests.stream().anyMatch(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.ADULT));
     }
-
-    private boolean containsEnoughAdults(List<TicketTypeRequest> ticketTypeRequests) {
-        long numberOfAdults = ticketTypeRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.ADULT)).count();
-        long numberOfInfants = ticketTypeRequests.stream().filter(ticket -> ticket.getTicketType().equals(TicketTypeRequest.Type.INFANT)).count();
-        return numberOfAdults >= numberOfInfants;
+    
+    private boolean containsInvalidValidTicketValues(List<TicketTypeRequest> ticketTypeRequests)  {
+        return ticketTypeRequests.stream().anyMatch(ticket -> ticket.getNoOfTickets() <= 0);
     }
-
+    
 }
