@@ -105,14 +105,26 @@ public class TicketServiceTest {
     } 
 
     @Test(expected = InvalidPurchaseException.class)
-    public void nullTests() {
+    public void allNuls() {
+
+        TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
+        
+        TicketTypeRequest[] tickets = {null,
+            null
+        };
+
+        ticketService.purchaseTickets(1L, tickets);
+    } 
+
+    @Test()
+    public void IgnoreNulls() {
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
         TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1),
             null,
             new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 5),
-            new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 3)
+            new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 1)
         };
 
 
@@ -122,6 +134,8 @@ public class TicketServiceTest {
     @Test()
     public void returnCorrectTicketPriceAndSeatReservation() {
 
+        Long accountId = 100012938L;
+
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
          TicketTypeRequest[] tickets = {new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 1),
@@ -129,15 +143,17 @@ public class TicketServiceTest {
             new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 5),
         };
 
-        ticketService.purchaseTickets(1L, tickets);
+        ticketService.purchaseTickets(accountId, tickets);
 
-        verify(mockSeatReservationService, times(1)).reserveSeat(1L, 8);
-        verify(mockTicketPaymentService, times(1)).makePayment(1L, 110);
+        verify(mockSeatReservationService, times(1)).reserveSeat(accountId, 8);
+        verify(mockTicketPaymentService, times(1)).makePayment(accountId, 110);
 
     } 
 
     @Test()
     public void returnCorrectTicketPriceAndSeatReservationIgnoringInfants() {
+
+        Long accountId = 100012938L;
 
         TicketService ticketService = new TicketServiceImpl(mockTicketPaymentService, mockSeatReservationService);
 
@@ -147,10 +163,10 @@ public class TicketServiceTest {
             new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 3)
         };
 
-        ticketService.purchaseTickets(1L, tickets);
+        ticketService.purchaseTickets(accountId, tickets);
 
-        verify(mockSeatReservationService, times(1)).reserveSeat(1L, 8);
-        verify(mockTicketPaymentService, times(1)).makePayment(1L, 110);
+        verify(mockSeatReservationService, times(1)).reserveSeat(accountId, 8);
+        verify(mockTicketPaymentService, times(1)).makePayment(accountId, 110);
 
     } 
 
